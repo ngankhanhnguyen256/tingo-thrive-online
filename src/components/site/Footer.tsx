@@ -63,13 +63,54 @@ export function Footer() {
           </ul>
         </div>
 
-        <div>
+        <div className="md:col-span-2 lg:col-span-1">
           <h4 className="text-sm font-bold uppercase tracking-wider text-leaf">Liên Hệ</h4>
-          <ul className="mt-4 space-y-3 text-sm text-background/70">
-            <li className="flex items-start gap-2"><MapPin className="mt-0.5 h-4 w-4 shrink-0 text-leaf" /> 1/12 Linh Đông, TP. Thủ Đức, TP.HCM</li>
-            <li className="flex items-center gap-2"><Phone className="h-4 w-4 text-leaf" /> 028 2210 7946</li>
-            <li className="flex items-center gap-2"><Mail className="h-4 w-4 text-leaf" /> hello@tingo.vn</li>
-          </ul>
+          <div className="mt-4 grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+            <a
+              href="https://maps.google.com/?q=1/12+Linh+Dong+Thu+Duc+HCM"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-start gap-3 rounded-2xl border border-white/10 bg-white/5 p-4 shadow-soft transition-all hover:-translate-y-0.5 hover:border-leaf/40 hover:bg-white"
+            >
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-leaf-soft text-leaf">
+                <MapPin className="h-5 w-5" />
+              </span>
+              <div>
+                <div className="text-xs font-bold uppercase tracking-wider text-leaf">Địa chỉ</div>
+                <div className="mt-1 text-sm text-background/80 group-hover:text-foreground">
+                  1/12 Linh Đông, TP. Thủ Đức, TP.HCM
+                </div>
+              </div>
+            </a>
+            <a
+              href="tel:02822107946"
+              className="group flex items-start gap-3 rounded-2xl border border-white/10 bg-white/5 p-4 shadow-soft transition-all hover:-translate-y-0.5 hover:border-ocean/40 hover:bg-white"
+            >
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-accent text-ocean">
+                <Phone className="h-5 w-5" />
+              </span>
+              <div>
+                <div className="text-xs font-bold uppercase tracking-wider text-ocean">Hotline</div>
+                <div className="mt-1 text-sm text-background/80 group-hover:text-foreground">
+                  028 2210 7946
+                </div>
+              </div>
+            </a>
+            <a
+              href="mailto:hello@tingo.vn"
+              className="group flex items-start gap-3 rounded-2xl border border-white/10 bg-white/5 p-4 shadow-soft transition-all hover:-translate-y-0.5 hover:border-leaf/40 hover:bg-white"
+            >
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-leaf-soft text-leaf">
+                <Mail className="h-5 w-5" />
+              </span>
+              <div>
+                <div className="text-xs font-bold uppercase tracking-wider text-leaf">Email</div>
+                <div className="mt-1 text-sm text-background/80 group-hover:text-foreground">
+                  hello@tingo.vn
+                </div>
+              </div>
+            </a>
+          </div>
         </div>
       </div>
 
