@@ -10,7 +10,7 @@ export function Hero() {
       <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-6 py-20 lg:grid-cols-2 lg:py-28">
         <div>
           <span className="inline-flex items-center gap-2 rounded-full border border-leaf/30 bg-white/70 px-4 py-1.5 text-xs font-semibold text-leaf backdrop-blur">
-            <Sparkles className="h-3.5 w-3.5" /> 100% Nguyên Liệu Tự Nhiên
+            <Sparkles className="h-3.5 w-3.5" /> 100% Nguyên Liệu Tự Nhiên Sạch
           </span>
           <h1 className="mt-6 text-5xl font-extrabold leading-[1.05] tracking-tight md:text-6xl lg:text-7xl">
             TINGO
