@@ -22,10 +22,15 @@ export function Hero() {
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-4">
-            <button className="group inline-flex items-center gap-2 rounded-full bg-gradient-ocean px-7 py-3.5 text-sm font-bold text-primary-foreground shadow-glow transition-transform hover:scale-[1.02]">
+            <a
+              href="https://tiny.cc/tiny/stats/limit_alert"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-center gap-2 rounded-full bg-gradient-ocean px-7 py-3.5 text-sm font-bold text-primary-foreground shadow-glow transition-transform hover:scale-[1.02]"
+            >
               Mua Ngay
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </button>
+            </a>
             <button className="inline-flex items-center gap-2 rounded-full border border-foreground/15 bg-white/70 px-6 py-3.5 text-sm font-semibold backdrop-blur hover:bg-white">
               <Play className="h-4 w-4 fill-leaf text-leaf" /> Xem Câu Chuyện
             </button>
