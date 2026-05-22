@@ -3,7 +3,7 @@ import chocolate from "@/assets/product-chocolate.jpg";
 
 export function Spotlight() {
   return (
-    <section className="bg-gradient-leaf py-24">
+    <section id="spotlight" className="scroll-mt-24 bg-gradient-leaf py-24">
       <div className="mx-auto max-w-7xl px-6">
         <div className="mx-auto max-w-2xl text-center">
           <span className="text-sm font-bold uppercase tracking-[0.2em] text-ocean">

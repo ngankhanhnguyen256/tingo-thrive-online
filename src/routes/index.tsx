@@ -4,6 +4,7 @@ import { Hero } from "@/components/site/Hero";
 import { Features } from "@/components/site/Features";
 import { Spotlight } from "@/components/site/Spotlight";
 import { ProductGrid } from "@/components/site/ProductGrid";
+import { Knowledge } from "@/components/site/Knowledge";
 import { Footer } from "@/components/site/Footer";
 
 export const Route = createFileRoute("/")({
@@ -24,13 +25,14 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background scroll-smooth">
       <Header />
       <main>
         <Hero />
         <Features />
         <Spotlight />
         <ProductGrid />
+        <Knowledge />
       </main>
       <Footer />
     </div>

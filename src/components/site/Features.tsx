@@ -66,13 +66,14 @@ export function Features() {
                 <p className="relative mt-2 text-sm leading-relaxed text-muted-foreground">
                   {it.desc}
                 </p>
-                <div
-                  className={`relative mt-5 inline-flex items-center gap-1 text-xs font-bold ${
+                <a
+                  href="#knowledge"
+                  className={`relative mt-5 inline-flex items-center gap-1 text-xs font-bold hover:underline ${
                     isLeaf ? "text-leaf" : "text-ocean"
                   }`}
                 >
                   Tìm hiểu thêm →
-                </div>
+                </a>
               </div>
             );
           })}
