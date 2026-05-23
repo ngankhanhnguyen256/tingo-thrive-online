@@ -41,7 +41,7 @@ export function Hero() {
             {[
               { k: "10+", v: "Năm Kinh Nghiệm" },
               { k: "50K+", v: "Khách Hài Lòng" },
-              { k: "nước quantum", v: "22000:2018" },
+              { k: "23K+", v: "22000:2018" },
             ].map((s) => (
               <div key={s.v}>
                 <div className="text-xl font-extrabold text-leaf leading-tight">{s.k}</div>
