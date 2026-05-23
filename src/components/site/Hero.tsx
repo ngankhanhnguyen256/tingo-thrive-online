@@ -40,7 +40,7 @@ export function Hero() {
           <div className="mt-12 grid max-w-md grid-cols-3 gap-6">
             {[
               { k: "10+", v: "Năm Kinh Nghiệm" },
-              { k: "50K+", v: "Khách Hài Lòng" },
+              { k: "TOP 5", v: "Khách Hài Lòng" },
               { k: "23K+", v: "22000:2018" },
             ].map((s) => (
               <div key={s.v}>
