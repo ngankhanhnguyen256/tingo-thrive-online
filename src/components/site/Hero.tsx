@@ -30,7 +30,7 @@ export function Hero() {
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </a>
             <a
-              href="#spotlight"
+              href="#journey"
               className="inline-flex items-center gap-2 rounded-full border border-foreground/15 bg-white/70 px-6 py-3.5 text-sm font-semibold backdrop-blur hover:bg-white"
             >
               <Play className="h-4 w-4 fill-leaf text-leaf" /> Xem Câu Chuyện

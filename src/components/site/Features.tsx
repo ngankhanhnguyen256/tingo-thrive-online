@@ -41,7 +41,7 @@ export function Features() {
           </h2>
         </div>
 
-        <div className="mt-16 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-16 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
           {items.map((it) => {
             const isLeaf = it.tone === "leaf";
             const Icon = it.icon;
