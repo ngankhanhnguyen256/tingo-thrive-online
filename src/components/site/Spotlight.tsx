@@ -1,7 +1,9 @@
 import { ShoppingCart, Check } from "lucide-react";
 import chocolate from "@/assets/product-chocolate.jpg";
+import { useCart } from "@/hooks/useCart";
 
 export function Spotlight() {
+  const { addItem } = useCart();
   return (
     <section id="spotlight" className="scroll-mt-24 bg-gradient-leaf py-24">
       <div className="mx-auto max-w-7xl px-6">
@@ -62,7 +64,10 @@ export function Spotlight() {
             </div>
 
             <div className="mt-6 flex flex-wrap gap-3">
-              <button className="inline-flex items-center gap-2 rounded-full bg-gradient-ocean px-7 py-3.5 text-sm font-bold text-primary-foreground shadow-glow hover:scale-[1.02]">
+              <button
+                onClick={() => addItem({ id: "p-choco", name: "TINGO Chocolate", price: "652.909đ", thumb: chocolate })}
+                className="inline-flex items-center gap-2 rounded-full bg-gradient-ocean px-7 py-3.5 text-sm font-bold text-primary-foreground shadow-glow hover:scale-[1.02]"
+              >
                 <ShoppingCart className="h-4 w-4" /> Thêm Vào Giỏ
               </button>
               <button className="rounded-full border border-foreground/15 bg-white px-6 py-3.5 text-sm font-semibold hover:bg-secondary">

@@ -1,24 +1,29 @@
 import { Link } from "@tanstack/react-router";
 import { Search, User, ShoppingCart, Menu } from "lucide-react";
 import { useState } from "react";
+import { SearchOverlay } from "./SearchOverlay";
+import { LoginModal } from "./LoginModal";
+import { useCart } from "@/hooks/useCart";
 
 const nav = [
   { label: "Trang Chủ", href: "#" },
   { label: "Sản Phẩm", href: "#products" },
   { label: "Combo Tiết Kiệm", href: "#products" },
-  { label: "Câu Chuyện", href: "#spotlight" },
-  { label: "Sức Khỏe", href: "#spotlight" },
+  { label: "Câu Chuyện", href: "#journey" },
+  { label: "Sức Khỏe", href: "#knowledge" },
 ];
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [loginOpen, setLoginOpen] = useState(false);
+  const { count } = useCart();
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/85 backdrop-blur-xl">
       <div className="mx-auto flex h-18 max-w-7xl items-center justify-between gap-6 px-6 py-4">
         <Link to="/" className="flex items-center gap-2">
-          <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-ocean text-primary-foreground font-bold">
-            T
-          </span>
+          <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-ocean text-primary-foreground font-bold">T</span>
           <span className="text-xl font-extrabold tracking-tight">
             <span className="text-leaf">TIN</span>
             <span className="text-ocean">GO</span>
@@ -34,18 +39,20 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <button aria-label="Tìm kiếm" className="grid h-10 w-10 place-items-center rounded-full text-foreground/70 hover:bg-secondary hover:text-foreground">
+          <button onClick={() => setSearchOpen(true)} aria-label="Tìm kiếm" className="grid h-10 w-10 place-items-center rounded-full text-foreground/70 hover:bg-secondary hover:text-foreground">
             <Search className="h-4.5 w-4.5" />
           </button>
-          <button aria-label="Tài khoản" className="grid h-10 w-10 place-items-center rounded-full text-foreground/70 hover:bg-secondary hover:text-foreground">
+          <button onClick={() => setLoginOpen(true)} aria-label="Tài khoản" className="grid h-10 w-10 place-items-center rounded-full text-foreground/70 hover:bg-secondary hover:text-foreground">
             <User className="h-4.5 w-4.5" />
           </button>
-          <button aria-label="Giỏ hàng" className="relative grid h-10 w-10 place-items-center rounded-full text-foreground/70 hover:bg-secondary hover:text-foreground">
+          <a href="#products" aria-label="Giỏ hàng" className="relative grid h-10 w-10 place-items-center rounded-full text-foreground/70 hover:bg-secondary hover:text-foreground">
             <ShoppingCart className="h-4.5 w-4.5" />
-            <span className="absolute -right-0.5 -top-0.5 grid h-5 min-w-5 place-items-center rounded-full bg-ocean px-1 text-[10px] font-bold text-ocean-foreground">
-              3
-            </span>
-          </button>
+            {count > 0 && (
+              <span className="absolute -right-0.5 -top-0.5 grid h-5 min-w-5 place-items-center rounded-full bg-ocean px-1 text-[10px] font-bold text-ocean-foreground">
+                {count}
+              </span>
+            )}
+          </a>
           <button onClick={() => setOpen(!open)} className="ml-1 grid h-10 w-10 place-items-center rounded-full hover:bg-secondary lg:hidden">
             <Menu className="h-5 w-5" />
           </button>
@@ -62,6 +69,9 @@ export function Header() {
           </nav>
         </div>
       )}
+
+      <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />
+      <LoginModal open={loginOpen} onClose={() => setLoginOpen(false)} />
     </header>
   );
 }

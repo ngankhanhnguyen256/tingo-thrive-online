@@ -48,8 +48,14 @@ export function Footer() {
         <div>
           <h4 className="text-sm font-bold uppercase tracking-wider text-leaf">Sản Phẩm</h4>
           <ul className="mt-4 space-y-2 text-sm text-background/70">
-            {["TINGO Chocolate", "TINGO Cereal", "TINGO Curcumin", "TINGO Protein", "TINGO Quantum"].map((x) => (
-              <li key={x}><a href="#" className="hover:text-background">{x}</a></li>
+            {[
+              { label: "TINGO Chocolate", href: "#spotlight" },
+              { label: "TINGO Cereal", href: "#products" },
+              { label: "TINGO Curcumin", href: "#products" },
+              { label: "TINGO Protein", href: "#products" },
+              { label: "TINGO Quantum", href: "#products" },
+            ].map((x) => (
+              <li key={x.label}><a href={x.href} className="hover:text-background">{x.label}</a></li>
             ))}
           </ul>
         </div>
@@ -57,8 +63,14 @@ export function Footer() {
         <div>
           <h4 className="text-sm font-bold uppercase tracking-wider text-leaf">Hỗ Trợ</h4>
           <ul className="mt-4 space-y-2 text-sm text-background/70">
-            {["Chính sách vận chuyển", "Chính sách đổi trả", "Chính sách bảo mật", "Câu hỏi thường gặp", "Liên hệ"].map((x) => (
-              <li key={x}><a href="#" className="hover:text-background">{x}</a></li>
+            {[
+              { label: "Chính sách vận chuyển", href: "#" },
+              { label: "Chính sách đổi trả", href: "#" },
+              { label: "Chính sách bảo mật", href: "#" },
+              { label: "Câu hỏi thường gặp", href: "#" },
+              { label: "Liên hệ", href: "#journey" },
+            ].map((x) => (
+              <li key={x.label}><a href={x.href} className="hover:text-background">{x.label}</a></li>
             ))}
           </ul>
         </div>
