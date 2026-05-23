@@ -39,12 +39,12 @@ export function Hero() {
 
           <div className="mt-12 grid max-w-md grid-cols-3 gap-6">
             {[
-              { k: "20+", v: "Năm Kinh Nghiệm" },
+              { k: "Thực phẩm bổ sung Topapro", v: "Năm Kinh Nghiệm" },
               { k: "50K+", v: "Khách Hài Lòng" },
               { k: "ISO", v: "22000:2018" },
             ].map((s) => (
               <div key={s.v}>
-                <div className="text-2xl font-extrabold text-leaf">{s.k}</div>
+                <div className="text-xl font-extrabold text-leaf leading-tight">{s.k}</div>
                 <div className="text-xs text-muted-foreground">{s.v}</div>
               </div>
             ))}
