@@ -12,10 +12,10 @@ import { useCart } from "@/hooks/useCart";
 type Product = { id: string; img: string; name: string; tag: string; price: string };
 
 const products: Product[] = [
-  { id: "p-cereal", img: cereal, name: "TINGO Cereal", tag: "Ngũ cốc dinh dưỡng", price: "407.455đ" },
-  { id: "p-curcumin", img: curcumin, name: "TINGO Curcumin Shot", tag: "Nghệ & gừng", price: "220.909đ" },
-  { id: "p-protein", img: protein, name: "TINGO Protein Bar", tag: "Đạm đậu nành", price: "189.000đ" },
-  { id: "p-quantum", img: quantum, name: "TINGO Quantum H₂", tag: "Nước Hydrogen", price: "780.545đ" },
+  { id: "p-cereal", img: cereal, name: "QUANTUM", tag: "Ngũ cốc dinh dưỡng", price: "407.455đ" },
+  { id: "p-curcumin", img: curcumin, name: "VHEALTH SCL", tag: "Nghệ & gừng", price: "220.909đ" },
+  { id: "p-protein", img: protein, name: "VHEALTH TRÀ XANH", tag: "Đạm đậu nành", price: "189.000đ" },
+  { id: "p-quantum", img: quantum, name: "VSPORTGEL", tag: "Nước Hydrogen", price: "780.545đ" },
   { id: "p-coffee", img: coffee, name: "Cà Phê TINGO", tag: "Thức uống năng lượng", price: "850.000đ" },
   { id: "p-yensao", img: yensao, name: "Tổ Yến Đông Trùng Hạ Thảo", tag: "Bồi bổ cao cấp", price: "920.000đ" },
   { id: "p-tra", img: tra, name: "Trà Thảo Mộc TINGO", tag: "Thanh nhiệt", price: "45.000đ" },
