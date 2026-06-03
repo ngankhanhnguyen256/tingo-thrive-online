@@ -45,14 +45,14 @@ export function Header() {
           <button onClick={() => setLoginOpen(true)} aria-label="Tài khoản" className="grid h-10 w-10 place-items-center rounded-full text-foreground/70 hover:bg-secondary hover:text-foreground">
             <User className="h-4.5 w-4.5" />
           </button>
-          <a href="#products" aria-label="Giỏ hàng" className="relative grid h-10 w-10 place-items-center rounded-full text-foreground/70 hover:bg-secondary hover:text-foreground">
+          <Link to="/checkout" aria-label="Giỏ hàng" className="relative grid h-10 w-10 place-items-center rounded-full text-foreground/70 hover:bg-secondary hover:text-foreground">
             <ShoppingCart className="h-4.5 w-4.5" />
             {count > 0 && (
               <span className="absolute -right-0.5 -top-0.5 grid h-5 min-w-5 place-items-center rounded-full bg-ocean px-1 text-[10px] font-bold text-ocean-foreground">
                 {count}
               </span>
             )}
-          </a>
+          </Link>
           <button onClick={() => setOpen(!open)} className="ml-1 grid h-10 w-10 place-items-center rounded-full hover:bg-secondary lg:hidden">
             <Menu className="h-5 w-5" />
           </button>
