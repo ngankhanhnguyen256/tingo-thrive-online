@@ -6,6 +6,7 @@ type State = { items: CartItem[] };
 type Action =
   | { type: "add"; item: Omit<CartItem, "qty">; qty?: number }
   | { type: "remove"; id: string }
+  | { type: "setQty"; id: string; qty: number }
   | { type: "clear" }
   | { type: "hydrate"; state: State };
 
@@ -25,6 +26,12 @@ function reducer(state: State, action: Action): State {
     }
     case "remove":
       return { items: state.items.filter((i) => i.id !== action.id) };
+    case "setQty":
+      return {
+        items: state.items
+          .map((i) => (i.id === action.id ? { ...i, qty: Math.max(0, action.qty) } : i))
+          .filter((i) => i.qty > 0),
+      };
     case "clear":
       return { items: [] };
     case "hydrate":
@@ -34,11 +41,22 @@ function reducer(state: State, action: Action): State {
   }
 }
 
+export function parsePrice(s: string): number {
+  const digits = s.replace(/[^\d]/g, "");
+  return digits ? parseInt(digits, 10) : 0;
+}
+
+export function formatPrice(n: number): string {
+  return n.toLocaleString("vi-VN") + "đ";
+}
+
 type Ctx = {
   items: CartItem[];
   count: number;
+  subtotal: number;
   addItem: (item: Omit<CartItem, "qty">, qty?: number) => void;
   removeItem: (id: string) => void;
+  setQty: (id: string, qty: number) => void;
   clear: () => void;
 };
 
@@ -47,7 +65,6 @@ const CartContext = createContext<Ctx | null>(null);
 export function CartProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, { items: [] });
 
-  // Hydrate from localStorage on mount (client only)
   useEffect(() => {
     if (typeof window === "undefined") return;
     try {
@@ -67,8 +84,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
     () => ({
       items: state.items,
       count: state.items.reduce((n, i) => n + i.qty, 0),
+      subtotal: state.items.reduce((n, i) => n + parsePrice(i.price) * i.qty, 0),
       addItem: (item, qty) => dispatch({ type: "add", item, qty }),
       removeItem: (id) => dispatch({ type: "remove", id }),
+      setQty: (id, qty) => dispatch({ type: "setQty", id, qty }),
       clear: () => dispatch({ type: "clear" }),
     }),
     [state],
@@ -80,12 +99,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
 export function useCart() {
   const ctx = useContext(CartContext);
   if (!ctx) {
-    // Safe no-op fallback for SSR or unwrapped trees
     return {
       items: [] as CartItem[],
       count: 0,
+      subtotal: 0,
       addItem: () => {},
       removeItem: () => {},
+      setQty: () => {},
       clear: () => {},
     } satisfies Ctx;
   }
