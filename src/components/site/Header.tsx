@@ -11,6 +11,7 @@ const nav = [
   { label: "Combo Tiết Kiệm", href: "#products" },
   { label: "Câu Chuyện", href: "#journey" },
   { label: "Sức Khỏe", href: "#knowledge" },
+  { label: "Theo Dõi Đơn Hàng", href: "/tra-cuu-don-hang" },
 ];
 
 export function Header() {
