@@ -1,4 +1,4 @@
-import { BookOpen, ImageIcon, PlayCircle } from "lucide-react";
+import { BookOpen, ImageIcon } from "lucide-react";
 import cereal from "@/assets/product-cereal.jpg";
 import protein from "@/assets/product-protein.jpg";
 import curcumin from "@/assets/product-curcumin.jpg";
@@ -79,21 +79,24 @@ export function Knowledge() {
               {/* Văn bản — Visual Edits chỉnh trực tiếp */}
               <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{s.text}</p>
 
-              {/* Video — dán YouTube URL hoặc .mp4 */}
+              {/* Video — Visual Edits cho phép Upload file .mp4 hoặc dán URL */}
               <div className="mt-4 aspect-video overflow-hidden rounded-2xl bg-foreground/90">
-                {s.video_url ? (
-                  isYouTube(s.video_url) ? (
-                    <iframe src={toEmbed(s.video_url)} title={s.title} className="h-full w-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
-                  ) : (
-                    <video src={s.video_url} controls playsInline className="h-full w-full object-cover" />
-                  )
+                {s.video_url && isYouTube(s.video_url) ? (
+                  <iframe
+                    src={toEmbed(s.video_url)}
+                    title={s.title}
+                    className="h-full w-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
                 ) : (
-                  <div className="grid h-full place-items-center text-white/70">
-                    <div className="text-center">
-                      <PlayCircle className="mx-auto h-10 w-10" />
-                      <p className="mt-2 text-xs">Bí Quyết Giảm Mệt Mỏi Tức Thì\n\n​\n\nDán YouTube URL hoặc upload .mp4\n\n\n</p>
-                    </div>
-                  </div>
+                  <video
+                    src={s.video_url || undefined}
+                    poster={s.image_url}
+                    controls
+                    playsInline
+                    className="h-full w-full object-cover"
+                  />
                 )}
               </div>
 
