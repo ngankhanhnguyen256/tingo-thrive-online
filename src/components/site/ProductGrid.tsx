@@ -12,14 +12,14 @@ import { useCart } from "@/hooks/useCart";
 type Product = { id: string; img: string; name: string; tag: string; price: string };
 
 const products: Product[] = [
-  { id: "p-cereal", img: cereal, name: "QUANTUM", tag: "Ngũ cốc dinh dưỡng", price: "407.455đ" },
-  { id: "p-curcumin", img: curcumin, name: "VHEALTH SCL", tag: "Nghệ & gừng", price: "220.909đ" },
-  { id: "p-protein", img: protein, name: "VHEALTH TRÀ XANH", tag: "Đạm đậu nành", price: "189.000đ" },
-  { id: "p-quantum", img: quantum, name: "VSPORTGEL", tag: "Nước Hydrogen", price: "780.545đ" },
-  { id: "p-coffee", img: coffee, name: "Cà Phê TINGO", tag: "Thức uống năng lượng", price: "850.000đ" },
-  { id: "p-yensao", img: yensao, name: "Tổ Yến Đông Trùng Hạ Thảo", tag: "Bồi bổ cao cấp", price: "920.000đ" },
-  { id: "p-tra", img: tra, name: "Trà Thảo Mộc TINGO", tag: "Thanh nhiệt", price: "45.000đ" },
-  { id: "p-sam", img: sam, name: "Nước Sâm Rong Biển TINGO", tag: "Giải nhiệt", price: "35.000đ" },
+  { id: "p-cereal", img: cereal, name: "HYDRONGEN QUANTUM", tag: "NGƯỚC ION KIỀM", price: "754.455đ" },
+  { id: "p-curcumin", img: curcumin, name: "VHEALTH SCL", tag: "BỘT DINH DƯỠNG", price: "652.000đ" },
+  { id: "p-protein", img: protein, name: "VHEALTH TRÀ XANH", tag: "​BỘT DINH DƯỠNG", price: "652.000đ" },
+  { id: "p-quantum", img: quantum, name: "VSPORTGEL", tag: "GEL NĂNG LƯỢNG", price: "1.900.545đ" },
+  { id: "p-coffee", img: coffee, name: "CÀ PHÊ LINKNEW", tag: "Thức uống năng lượng", price: "407.000đ" },
+  { id: "p-yensao", img: yensao, name: "GREEN QUANTUM", tag: "Nước uống cô đặc", price: "220.000đ" },
+  { id: "p-tra", img: tra, name: "TOPAPRO", tag: "THỰC PHẨM BỔ SUNG", price: "680.000đ" },
+  { id: "p-sam", img: sam, name: "VHEALTH 2 VỊ", tag: "COMBO DINH DƯỠNG", price: "1.323.000đ" },
 ];
 
 export function ProductGrid() {
