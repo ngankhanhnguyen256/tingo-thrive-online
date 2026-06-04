@@ -91,14 +91,14 @@ export function Knowledge() {
                   <div className="grid h-full place-items-center text-white/70">
                     <div className="text-center">
                       <PlayCircle className="mx-auto h-10 w-10" />
-                      <p className="mt-2 text-xs">Dán YouTube URL hoặc upload .mp4</p>
+                      <p className="mt-2 text-xs">Bí Quyết Giảm Mệt Mỏi Tức Thì\n\n​\n\nDán YouTube URL hoặc upload .mp4\n\n\n</p>
                     </div>
                   </div>
                 )}
               </div>
 
               <div className="mt-3 flex items-center gap-3 text-xs text-muted-foreground">
-                <ImageIcon className="h-3.5 w-3.5" /> Ảnh + chữ + video — chỉnh sửa qua Visual Edits.
+                <ImageIcon className="h-3.5 w-3.5" /> \n
               </div>
             </article>
           ))}
