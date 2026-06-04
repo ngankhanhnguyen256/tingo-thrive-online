@@ -11,8 +11,17 @@ function toEmbed(url: string) {
 }
 
 export function Journey() {
+  // Chỉ hiển thị slide có ảnh hoặc video hợp lệ; tối đa 5 slide
+  const slides = journeySlides
+    .filter((j) => (j.poster_url && j.poster_url.trim() !== "") || (j.video_url && j.video_url.trim() !== ""))
+    .slice(0, 5);
+
   const [i, setI] = useState(0);
-  const s = journeySlides[i];
+
+  if (slides.length === 0) return null;
+
+  const safeIndex = i % slides.length;
+  const s = slides[safeIndex];
 
   return (
     <section id="journey" className="scroll-mt-24 bg-foreground py-24 text-background">
@@ -41,14 +50,14 @@ export function Journey() {
               ) : (
                 <video
                   src={s.video_url}
-                  poster={s.poster_url}
+                  poster={s.poster_url || undefined}
                   controls
                   playsInline
                   className="h-full w-full object-cover"
                 />
               )
             ) : (
-              <img src={s.poster_url} alt={s.title} loading="lazy" className="h-full w-full object-cover opacity-80" />
+              <img src={s.poster_url} alt={s.title} loading="lazy" className="h-full w-full object-cover" />
             )}
           </div>
 
@@ -59,15 +68,15 @@ export function Journey() {
             </div>
             <div className="flex items-center gap-2">
               <button
-                onClick={() => setI((p) => (p - 1 + journeySlides.length) % journeySlides.length)}
+                onClick={() => setI((p) => (p - 1 + slides.length) % slides.length)}
                 aria-label="Slide trước"
                 className="grid h-10 w-10 place-items-center rounded-full bg-white/10 hover:bg-white/20"
               >
                 <ChevronLeft className="h-4 w-4" />
               </button>
-              <span className="text-xs text-background/70">{i + 1} / {journeySlides.length}</span>
+              <span className="text-xs text-background/70">{safeIndex + 1} / {slides.length}</span>
               <button
-                onClick={() => setI((p) => (p + 1) % journeySlides.length)}
+                onClick={() => setI((p) => (p + 1) % slides.length)}
                 aria-label="Slide kế"
                 className="grid h-10 w-10 place-items-center rounded-full bg-white/10 hover:bg-white/20"
               >
@@ -77,17 +86,17 @@ export function Journey() {
           </div>
         </div>
 
-        {/* Thumbnails dọc — Visual Edits có thể click từng video/ảnh để upload */}
-        <div className="mt-6 grid gap-3 sm:grid-cols-3">
-          {journeySlides.map((j, idx) => (
+        {/* Thumbnails — Visual Edits click từng ảnh để Upload file hoặc dán URL */}
+        <div className="mt-6 grid gap-3 sm:grid-cols-3 lg:grid-cols-5">
+          {slides.map((j, idx) => (
             <button
               key={j.id}
               onClick={() => setI(idx)}
-              className={`overflow-hidden rounded-2xl border text-left transition-all ${idx === i ? "border-leaf" : "border-white/10 hover:border-white/30"}`}
+              className={`overflow-hidden rounded-2xl border text-left transition-all ${idx === safeIndex ? "border-leaf" : "border-white/10 hover:border-white/30"}`}
             >
               <div className="aspect-video bg-black">
                 {j.video_url && !isYouTube(j.video_url) ? (
-                  <video src={j.video_url} poster={j.poster_url} muted className="h-full w-full object-cover" />
+                  <video src={j.video_url} poster={j.poster_url || undefined} muted className="h-full w-full object-cover" />
                 ) : (
                   <img src={j.poster_url} alt={j.title} loading="lazy" className="h-full w-full object-cover" />
                 )}
