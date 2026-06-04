@@ -14,10 +14,10 @@ type Slot = {
 
 // 4 ô Content Slot — Visual Edits cho phép upload ảnh / dán URL video / sửa chữ
 const slots: Slot[] = [
-  { id: "slot-1", title: "Năng Lượng Sạch", text: "Bài viết về nguồn năng lượng bền vững từ cacao và ngũ cốc nguyên cám. Bạn có thể thay nội dung, ảnh hoặc dán video YouTube.", image_url: cereal, video_url: "" },
-  { id: "slot-2", title: "Đạm Đậu Nành", text: "Phân tích chuyên sâu về protein thực vật, axit amin thiết yếu và lợi ích tiêu hoá.", image_url: protein, video_url: "" },
-  { id: "slot-3", title: "Sữa Non & Nghệ", text: "Tổng hợp công dụng của sữa non và curcumin với hệ miễn dịch và dạ dày.", image_url: curcumin, video_url: "" },
-  { id: "slot-4", title: "Hydrogen & Detox", text: "Hướng dẫn uống nước Hydrogen đúng cách để hỗ trợ thanh lọc cơ thể.", image_url: quantum, video_url: "" },
+  { id: "slot-1", title: "Năng Lượng Sạch", text: "\n", image_url: cereal, video_url: "" },
+  { id: "slot-2", title: "Đạm Đậu Nành", text: "\n", image_url: protein, video_url: "" },
+  { id: "slot-3", title: "Nước Ion Kiềm Công Nghệ Lượng Tử", text: "\n", image_url: curcumin, video_url: "" },
+  { id: "slot-4", title: " Bí Quyết Giảm Mệt Mỏi Tức Thì ", text: "​", image_url: quantum, video_url: "" },
 ];
 
 function isYouTube(url: string) {
@@ -91,14 +91,14 @@ export function Knowledge() {
                   <div className="grid h-full place-items-center text-white/70">
                     <div className="text-center">
                       <PlayCircle className="mx-auto h-10 w-10" />
-                      <p className="mt-2 text-xs">Dán YouTube URL hoặc upload .mp4</p>
+                      <p className="mt-2 text-xs">Bí Quyết Giảm Mệt Mỏi Tức Thì\n\n​\n\nDán YouTube URL hoặc upload .mp4\n\n\n</p>
                     </div>
                   </div>
                 )}
               </div>
 
               <div className="mt-3 flex items-center gap-3 text-xs text-muted-foreground">
-                <ImageIcon className="h-3.5 w-3.5" /> Ảnh + chữ + video — chỉnh sửa qua Visual Edits.
+                <ImageIcon className="h-3.5 w-3.5" /> \n
               </div>
             </article>
           ))}
