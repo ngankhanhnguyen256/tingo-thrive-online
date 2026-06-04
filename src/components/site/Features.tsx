@@ -4,25 +4,25 @@ const items = [
   {
     icon: Zap,
     title: "Năng Lượng Sạch",
-    desc: "Cacao và ngũ cốc nguyên cám nuôi dưỡng nguồn năng lượng bền vững suốt cả ngày.",
+    desc: "Thay vì nạp năng lượng \"rỗng\" từ đường tinh luyện gây mệt mỏi nhanh, cơ thể bạn cần Complex Carbs (tinh bột phức hợp) từ ngũ cốc nguyên cám. Chúng giải phóng năng lượng từ từ, giữ đường huyết ổn định suốt ngày dài. Mẹo hay: Kết hợp ngũ cốc và cacao nguyên chất giàu Flavonoid giúp bạn tỉnh táo, no lâu và giữ dáng hiệu quả. Chỉ 3 phút mỗi sáng với V-Health là đủ năng lượng bền vững cho cả ngày bận rộn.",
     tone: "leaf",
   },
   {
     icon: Sprout,
     title: "Đạm Đậu Nành",
-    desc: "Protein thực vật giàu axit amin thiết yếu, dễ tiêu hóa, phù hợp mọi đối tượng.",
+    desc: "Hệ tiêu hóa quá tải vì đạm động vật nhiều cholesterol? Hãy chuyển sang đạm thực vật từ đậu Hà Lan tinh khiết. Đây là nguồn protein lành tính, giàu axit amin thiết yếu nhưng hoàn toàn không chứa chất béo bão hòa. Điểm cộng lớn: Đạm đậu Hà Lan cực kỳ dễ tiêu, không gây đầy bụng, ợ hơi, giúp bảo vệ tim mạch và nhẹ nhàng với cả dạ dày nhạy cảm của người lớn tuổi hoặc người ăn xanh.",
     tone: "ocean",
   },
   {
     icon: Sun,
-    title: "Sữa Non & Nghệ",
-    desc: "Sữa non quý giá kết hợp curcumin giúp tăng đề kháng và bảo vệ dạ dày.",
+    title: "Nước Ion Kiềm Công Nghệ Lượng Tử",
+    desc: "Không chỉ là nước uống giải khát, nước Ion Kiềm Quantum ứng dụng công nghệ lượng tử hiện đại mang đến nguồn nước giàu tính kiềm tự nhiên và nồng độ Hydrogen cao. Giá trị thực: Các cụm phân tử nước siêu nhỏ giúp thẩm thấu nhanh vào từng tế bào, trung hòa axit dư thừa và đào thải độc tố tối ưu. Sử dụng mỗi ngày là bí quyết đơn giản nhất để chống oxy hóa, giúp cơ thể luôn cân bằng, khỏe khoắn.",
     tone: "leaf",
   },
   {
     icon: Truck,
-    title: "Giao Hàng Toàn Quốc",
-    desc: "Miễn phí vận chuyển cho đơn từ 500.000đ, giao nhanh chỉ trong 24 giờ.",
+    title: " Bí Quyết Giảm Mệt Mỏi Tức Thì ",
+    desc: "Khi cơ thể cạn kiệt năng lượng do vận động mạnh hoặc làm việc quá sức, việc bổ sung đúng chất là cực kỳ quan trọng. Sự kết hợp giữa năng lượng chuyển hóa nhanh, Khoáng chất (Magnesi, Kẽm) and Vitamin nhóm B (B1, B5, B6) chính là \"chìa khóa\" giúp cơ bắp phục hồi, giảm tình trạng uể oải, chuột rút. Mẹo nhỏ: Bỏ túi 1 gói V-Sport Gel để bù khoáng, đập tan mệt mỏi và lấy lại phong độ tức thì.",
     tone: "ocean",
   },
 ];
@@ -35,7 +35,7 @@ export function Features() {
           <span className="text-sm font-bold uppercase tracking-[0.2em] text-leaf">
             Vì Sao Chọn TINGO
           </span>
-          <h2 className="mt-4 text-4xl font-extrabold md:text-5xl">
+          <h2 className="mt-4 text-4xl font-extrabold md:text-5xl text-center">
             Sống khoẻ mỗi ngày <br />
             <span className="text-gradient-brand">từ những điều tự nhiên</span>
           </h2>

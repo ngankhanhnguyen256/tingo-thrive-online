@@ -19,7 +19,7 @@ export function Journey() {
       <div className="mx-auto max-w-7xl px-6">
         <div className="mx-auto max-w-3xl text-center">
           <span className="text-sm font-bold uppercase tracking-[0.2em] text-leaf">Câu Chuyện</span>
-          <h2 className="mt-4 text-4xl font-extrabold md:text-5xl">
+          <h2 className="mt-4 text-4xl font-extrabold md:text-5xl text-center">
             HÀNH TRÌNH <span className="text-gradient-brand">TINGO</span>
           </h2>
           <p className="mt-4 text-background/70">

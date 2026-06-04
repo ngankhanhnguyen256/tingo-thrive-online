@@ -34,7 +34,7 @@ export function Knowledge() {
       <div className="mx-auto max-w-7xl px-6">
         <div className="mx-auto max-w-3xl text-center">
           <span className="text-sm font-bold uppercase tracking-[0.2em] text-ocean">Kiến Thức TINGO</span>
-          <h2 className="mt-4 text-4xl font-extrabold md:text-5xl">
+          <h2 className="mt-4 text-4xl font-extrabold md:text-5xl text-center">
             CẨM NANG DINH DƯỠNG & <span className="text-gradient-brand">SỨC KHỎE TINGO</span>
           </h2>
           <p className="mt-4 text-muted-foreground">
