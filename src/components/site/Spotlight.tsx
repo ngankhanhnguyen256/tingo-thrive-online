@@ -11,7 +11,7 @@ export function Spotlight() {
           <span className="text-sm font-bold uppercase tracking-[0.2em] text-ocean">
             Lựa Chọn Tháng Này
           </span>
-          <h2 className="mt-4 text-4xl font-extrabold md:text-5xl">
+          <h2 className="mt-4 text-4xl font-extrabold md:text-5xl text-center">
             Tâm điểm <span className="text-gradient-brand">sức khoẻ</span>
           </h2>
         </div>
@@ -33,16 +33,16 @@ export function Spotlight() {
             <span className="inline-flex items-center gap-2 rounded-full bg-ocean/10 px-3 py-1 text-xs font-bold text-ocean">
               Bán Chạy #1
             </span>
-            <h3 className="mt-4 text-4xl font-extrabold md:text-5xl">TINGO Chocolate</h3>
+            <h3 className="mt-4 text-4xl font-extrabold md:text-5xl whitespace-pre-line">BỘT DINH DƯỠNG{"\n"}VHEALTH 2 VỊ</h3>
             <p className="mt-3 text-lg text-muted-foreground">
-              Sức khỏe toàn diện trong 1 ly — bữa ăn thay thế cao cấp với vị cacao đậm đà.
+              ​
             </p>
 
             <ul className="mt-6 space-y-3">
               {[
-                "25 loại vitamin & khoáng chất thiết yếu",
-                "Giàu đạm thực vật, ít đường",
-                "Đạt chuẩn ISO 22000:2018 & HACCP",
+                "Pha 1 gói Vhealth với khoảng 150ml nước",
+                "Ngon hơn khi pha với nước ấm",
+                "Có thể pha với nước lọc, sữa, nước hoa quả... khuấy đều và thưởng thức",
               ].map((b) => (
                 <li key={b} className="flex items-start gap-3">
                   <span className="mt-0.5 grid h-5 w-5 place-items-center rounded-full bg-leaf text-primary-foreground">
@@ -55,8 +55,8 @@ export function Spotlight() {
 
             <div className="mt-8 flex items-end gap-4">
               <div>
-                <div className="text-xs text-muted-foreground line-through">780.000đ</div>
-                <div className="text-4xl font-extrabold text-leaf">652.909đ</div>
+                <div className="text-xs text-muted-foreground line-through">790.000đ</div>
+                <div className="text-4xl font-extrabold text-leaf">790.000đ</div>
               </div>
               <span className="mb-1 rounded-full bg-leaf-soft px-3 py-1 text-xs font-bold text-leaf">
                 -16%
