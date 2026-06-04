@@ -1,4 +1,4 @@
-import { BookOpen, ImageIcon, PlayCircle } from "lucide-react";
+import { BookOpen, ImageIcon } from "lucide-react";
 import cereal from "@/assets/product-cereal.jpg";
 import protein from "@/assets/product-protein.jpg";
 import curcumin from "@/assets/product-curcumin.jpg";
