@@ -14,10 +14,10 @@ type Slot = {
 
 // 4 ô Content Slot — Visual Edits cho phép upload ảnh / dán URL video / sửa chữ
 const slots: Slot[] = [
-  { id: "slot-1", title: "Năng Lượng Sạch", text: "Bài viết về nguồn năng lượng bền vững từ cacao và ngũ cốc nguyên cám. Bạn có thể thay nội dung, ảnh hoặc dán video YouTube.", image_url: cereal, video_url: "" },
-  { id: "slot-2", title: "Đạm Đậu Nành", text: "Phân tích chuyên sâu về protein thực vật, axit amin thiết yếu và lợi ích tiêu hoá.", image_url: protein, video_url: "" },
-  { id: "slot-3", title: "Sữa Non & Nghệ", text: "Tổng hợp công dụng của sữa non và curcumin với hệ miễn dịch và dạ dày.", image_url: curcumin, video_url: "" },
-  { id: "slot-4", title: "Hydrogen & Detox", text: "Hướng dẫn uống nước Hydrogen đúng cách để hỗ trợ thanh lọc cơ thể.", image_url: quantum, video_url: "" },
+  { id: "slot-1", title: "Năng Lượng Sạch", text: "\n", image_url: cereal, video_url: "" },
+  { id: "slot-2", title: "Đạm Đậu Nành", text: "\n", image_url: protein, video_url: "" },
+  { id: "slot-3", title: "Nước Ion Kiềm Công Nghệ Lượng Tử", text: "\n", image_url: curcumin, video_url: "" },
+  { id: "slot-4", title: " Bí Quyết Giảm Mệt Mỏi Tức Thì ", text: "​", image_url: quantum, video_url: "" },
 ];
 
 function isYouTube(url: string) {
