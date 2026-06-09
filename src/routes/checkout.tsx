@@ -1,9 +1,10 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
-import { ArrowLeft, Check, Minus, Plus, QrCode, ShoppingBag, Trash2, Truck } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { ArrowLeft, Check, Lock, Minus, Plus, QrCode, ShoppingBag, Trash2, Truck } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { useCart, formatPrice } from "@/hooks/useCart";
+import { useAuth, postOrderWebhook } from "@/hooks/useAuth";
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({
@@ -21,15 +22,52 @@ function randomOrderId() {
   return "TG" + Math.random().toString(36).slice(2, 7).toUpperCase() + Date.now().toString().slice(-4);
 }
 
+// Khoá lưu các đơn hàng vừa đặt (chưa sync lên Google Sheets) để trang tra cứu đọc
+const PENDING_ORDERS_KEY = "tingo_pending_orders_v1";
+
+export type PendingOrder = {
+  orderId: string;
+  customer: string;
+  phone: string;
+  address: string;
+  note?: string;
+  method: Method;
+  total: number;
+  orderDate: string;
+  status: "Chờ xác nhận đơn";
+  createdAt: string;
+};
+
+function savePendingOrder(o: PendingOrder) {
+  try {
+    const raw = localStorage.getItem(PENDING_ORDERS_KEY);
+    const list: PendingOrder[] = raw ? JSON.parse(raw) : [];
+    list.unshift(o);
+    localStorage.setItem(PENDING_ORDERS_KEY, JSON.stringify(list.slice(0, 50)));
+  } catch {}
+}
+
 function CheckoutPage() {
   const { items, subtotal, setQty, removeItem, clear } = useCart();
   const navigate = useNavigate();
+  const { user, isAuthenticated, openAuthModal } = useAuth();
 
   const [form, setForm] = useState({ name: "", phone: "", address: "", note: "" });
   const [method, setMethod] = useState<Method>("cod");
   const [orderId, setOrderId] = useState<string | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showBank, setShowBank] = useState(false);
+
+  // Tự điền thông tin khi đã đăng nhập
+  useEffect(() => {
+    if (user) {
+      setForm((f) => ({
+        ...f,
+        name: f.name || user.name,
+        phone: f.phone || user.phone,
+      }));
+    }
+  }, [user]);
 
   const shipping = 0;
   const total = subtotal + shipping;
@@ -42,7 +80,39 @@ function CheckoutPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!canSubmit) return;
+
+    // ÉP ĐĂNG NHẬP TRƯỚC KHI THANH TOÁN
+    if (!isAuthenticated) {
+      openAuthModal("login");
+      return;
+    }
+
     const id = randomOrderId();
+    const today = new Date();
+    const orderDate = today.toLocaleDateString("vi-VN");
+
+    // Tạo đơn với trạng thái mặc định "Chờ xác nhận đơn"
+    const pending: PendingOrder = {
+      orderId: id,
+      customer: form.name.trim(),
+      phone: form.phone.replace(/\s+/g, "").trim(),
+      address: form.address.trim(),
+      note: form.note.trim() || undefined,
+      method,
+      total,
+      orderDate,
+      status: "Chờ xác nhận đơn",
+      createdAt: today.toISOString(),
+    };
+    savePendingOrder(pending);
+
+    // Gửi đơn ra webhook (Google Sheets / Make / Zapier) - chuẩn bị cho cột "Trạng Thái Đơn Hàng"
+    postOrderWebhook({
+      type: "order_created",
+      ...pending,
+      items: items.map((it) => ({ id: it.id, name: it.name, qty: it.qty, price: it.price })),
+    });
+
     setOrderId(id);
     if (method === "cod") setShowSuccess(true);
     else setShowBank(true);
@@ -52,7 +122,7 @@ function CheckoutPage() {
     clear();
     setShowSuccess(false);
     setShowBank(false);
-    navigate({ to: "/" });
+    navigate({ to: "/tra-cuu-don-hang" });
   };
 
   return (
