@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Search, Package, CheckCircle2, Truck, Box, Clipboard } from "lucide-react";
+import { Search, Package, CheckCircle2, Truck, Box, Clipboard, ClipboardCheck } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 
@@ -16,23 +16,86 @@ export const Route = createFileRoute("/tra-cuu-don-hang")({
   component: TrackingPage,
 });
 
-type OrderStatus = "Đã tiếp nhận" | "Đang đóng gói" | "Đang giao" | "Đã giao";
+// ===========================================================
+//  CẤU HÌNH WEBHOOK TRA CỨU
+//  Khi bạn có Google Sheets / Make / Zapier, hãy dán URL ở đây.
+//  Webhook nên trả JSON dạng:
+//  {
+//    "customer": "Nguyễn Văn A",
+//    "phone": "0987654321",
+//    "orderDate": "01/06/2026",
+//    "carrier": "J&T Express",
+//    "trackingCode": "JT123456789",
+//    "status": "Đang giao"   // map theo cột "Trạng Thái Đơn Hàng"
+//  }
+// ===========================================================
+const API_URL = "";
+
+// Đồng bộ 5 mốc trạng thái (khớp với cột "Trạng Thái Đơn Hàng" trong Excel)
+export type OrderStatus =
+  | "Chờ xác nhận đơn"
+  | "Đã xác nhận"
+  | "Chờ vận chuyển"
+  | "Đang giao"
+  | "Đã giao";
 
 type Order = {
   customer: string;
+  phone?: string;
   orderDate: string;
-  carrier: string;
-  trackingCode: string;
+  carrier?: string;
+  trackingCode?: string;
   status: OrderStatus;
 };
 
-// TODO: Thay bằng URL Webhook Google Sheets / Make / Zapier của bạn
-const API_URL = "";
+const STEPS: { key: OrderStatus; label: string; icon: typeof Package }[] = [
+  { key: "Chờ xác nhận đơn", label: "Chờ xác nhận đơn", icon: Clipboard },
+  { key: "Đã xác nhận", label: "Đã xác nhận đơn", icon: ClipboardCheck },
+  { key: "Chờ vận chuyển", label: "Đang đóng gói", icon: Box },
+  { key: "Đang giao", label: "Đang giao hàng", icon: Truck },
+  { key: "Đã giao", label: "Giao hàng thành công", icon: CheckCircle2 },
+];
 
-// Mock data để xem thử
+// Bản đồ alias trạng thái để chấp nhận nhiều cách viết khác nhau từ Google Sheets
+const STATUS_ALIASES: Record<string, OrderStatus> = {
+  "cho xac nhan don": "Chờ xác nhận đơn",
+  "cho xac nhan": "Chờ xác nhận đơn",
+  "moi dat": "Chờ xác nhận đơn",
+  "da xac nhan": "Đã xác nhận",
+  "xac nhan": "Đã xác nhận",
+  "cho van chuyen": "Chờ vận chuyển",
+  "dang dong goi": "Chờ vận chuyển",
+  "dong goi": "Chờ vận chuyển",
+  "dang giao": "Đang giao",
+  "dang van chuyen": "Đang giao",
+  "da giao": "Đã giao",
+  "hoan thanh": "Đã giao",
+};
+
+function normalize(s: string): string {
+  return s
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/đ/g, "d")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function parseStatus(raw?: string): OrderStatus {
+  if (!raw) return "Chờ xác nhận đơn";
+  const key = normalize(raw);
+  if (STATUS_ALIASES[key]) return STATUS_ALIASES[key];
+  // thử khớp trực tiếp với các nhãn step
+  const direct = STEPS.find((s) => normalize(s.key) === key || normalize(s.label) === key);
+  return direct ? direct.key : "Chờ xác nhận đơn";
+}
+
+// Demo data cho khi chưa cấu hình webhook
 const MOCK_DB: Record<string, Order> = {
   "0987654321": {
     customer: "Nguyễn Văn A",
+    phone: "0987654321",
     orderDate: "01/06/2026",
     carrier: "J&T Express",
     trackingCode: "JT123456789",
@@ -47,31 +110,63 @@ const MOCK_DB: Record<string, Order> = {
   },
 };
 
+// Đọc các đơn hàng vừa đặt (lưu trong localStorage tại trang Checkout)
+type PendingOrder = {
+  orderId: string;
+  customer: string;
+  phone: string;
+  orderDate: string;
+  status: OrderStatus;
+};
+
+function lookupPendingOrder(query: string): Order | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = localStorage.getItem("tingo_pending_orders_v1");
+    if (!raw) return null;
+    const list: PendingOrder[] = JSON.parse(raw);
+    const q = query.trim().toLowerCase();
+    const found = list.find(
+      (o) => o.orderId.toLowerCase() === q || o.phone === query.trim(),
+    );
+    if (!found) return null;
+    return {
+      customer: found.customer,
+      phone: found.phone,
+      orderDate: found.orderDate,
+      carrier: "Đang cập nhật",
+      trackingCode: found.orderId,
+      status: found.status || "Chờ xác nhận đơn",
+    };
+  } catch {
+    return null;
+  }
+}
+
 async function fetchOrder(query: string): Promise<Order | null> {
-  // Gọi API thật nếu đã cấu hình
+  // 1) Ưu tiên API/Webhook nếu đã cấu hình
   if (API_URL) {
     try {
       const res = await fetch(`${API_URL}?q=${encodeURIComponent(query)}`, { method: "GET" });
-      if (!res.ok) return null;
-      const data = await res.json();
-      if (!data || !data.customer) return null;
-      return data as Order;
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.customer) {
+          return { ...data, status: parseStatus(data.status) } as Order;
+        }
+      }
     } catch {
-      return null;
+      // im lặng — fallback xuống local/mock
     }
   }
-  // Fallback: Mock data
-  await new Promise((r) => setTimeout(r, 500));
-  const key = query.trim();
-  return MOCK_DB[key] ?? null;
-}
 
-const STEPS: { key: OrderStatus; label: string; icon: typeof Package }[] = [
-  { key: "Đã tiếp nhận", label: "Đã tiếp nhận đơn", icon: Clipboard },
-  { key: "Đang đóng gói", label: "Đang đóng gói", icon: Box },
-  { key: "Đang giao", label: "Đang giao hàng", icon: Truck },
-  { key: "Đã giao", label: "Giao hàng thành công", icon: CheckCircle2 },
-];
+  // 2) Nếu webhook chưa có dữ liệu, đọc đơn vừa đặt từ localStorage (mốc 1 sáng xanh)
+  const pending = lookupPendingOrder(query);
+  if (pending) return pending;
+
+  // 3) Fallback demo
+  await new Promise((r) => setTimeout(r, 400));
+  return MOCK_DB[query.trim()] ?? null;
+}
 
 function statusIndex(s: OrderStatus): number {
   return STEPS.findIndex((x) => x.key === s);
@@ -143,8 +238,8 @@ function TrackingPage() {
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <Info label="Họ tên khách" value={order.customer} />
                 <Info label="Ngày đặt" value={order.orderDate} />
-                <Info label="Đơn vị vận chuyển" value={order.carrier} />
-                <Info label="Mã vận đơn" value={order.trackingCode} />
+                <Info label="Đơn vị vận chuyển" value={order.carrier || "Đang cập nhật"} />
+                <Info label="Mã vận đơn" value={order.trackingCode || "—"} />
               </div>
 
               {/* Timeline */}
