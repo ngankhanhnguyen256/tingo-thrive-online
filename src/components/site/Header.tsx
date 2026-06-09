@@ -100,7 +100,6 @@ export function Header() {
       )}
 
       <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />
-      <LoginModal open={loginOpen} onClose={() => setLoginOpen(false)} />
     </header>
   );
 }
