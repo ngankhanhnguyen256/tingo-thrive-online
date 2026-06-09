@@ -258,11 +258,18 @@ function CheckoutPage() {
                   disabled={!canSubmit}
                   className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-ocean px-7 py-4 text-sm font-extrabold uppercase tracking-wider text-primary-foreground shadow-glow transition-transform hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
                 >
-                  <ShoppingBag className="h-4 w-4" /> Xác nhận đặt hàng
+                  {isAuthenticated ? <ShoppingBag className="h-4 w-4" /> : <Lock className="h-4 w-4" />}
+                  {isAuthenticated ? "Xác nhận đặt hàng" : "Đăng nhập để thanh toán"}
                 </button>
+                {!isAuthenticated && (
+                  <p className="mt-2 text-center text-xs font-semibold text-ocean">
+                    Bạn cần đăng nhập bằng số điện thoại trước khi hoàn tất đơn hàng.
+                  </p>
+                )}
                 <p className="mt-3 text-center text-xs text-muted-foreground">
                   Bằng việc đặt hàng, bạn đồng ý với Điều khoản & Chính sách bảo mật của TINGO.
                 </p>
+
               </section>
             </aside>
           </form>
