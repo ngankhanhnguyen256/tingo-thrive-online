@@ -10,6 +10,8 @@ import {
 
 import appCss from "../styles.css?url";
 import { CartProvider } from "@/hooks/useCart";
+import { AuthProvider, useAuth } from "@/hooks/useAuth";
+import { LoginModal } from "@/components/site/LoginModal";
 
 function NotFoundComponent() {
   return (
@@ -114,9 +116,17 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <CartProvider>
-        <Outlet />
-      </CartProvider>
+      <AuthProvider>
+        <CartProvider>
+          <Outlet />
+          <GlobalAuthModal />
+        </CartProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
+}
+
+function GlobalAuthModal() {
+  const { loginModalOpen, closeAuthModal } = useAuth();
+  return <LoginModal open={loginModalOpen} onClose={closeAuthModal} />;
 }
