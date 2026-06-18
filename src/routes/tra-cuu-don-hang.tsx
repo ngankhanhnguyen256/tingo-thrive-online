@@ -351,8 +351,8 @@ function TrackingPage() {
 
           {!order && !error && (
             <div className="mx-auto mt-6 max-w-2xl text-center text-xs text-muted-foreground">
-              Gợi ý dùng thử: <span className="font-semibold text-foreground">0987654321</span> hoặc{" "}
-              <span className="font-semibold text-foreground">TG-2026</span>
+              Để tra cứu, vui lòng nhập đúng <span className="font-semibold text-foreground">Mã đơn hàng</span> và{" "}
+              <span className="font-semibold text-foreground">Số điện thoại</span> đã sử dụng khi đặt hàng.
             </div>
           )}
         </section>
