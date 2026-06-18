@@ -14,7 +14,36 @@ export type TingoUser = {
   createdAt: string;
 };
 
-type StoredUser = TingoUser & { password: string };
+type StoredUser = TingoUser & {
+  // Lưu hash thay vì mật khẩu thô. Giữ trường `password` cũ để migrate dữ liệu cũ.
+  passwordHash?: string;
+  salt?: string;
+  password?: string;
+};
+
+// Hash mật khẩu phía client bằng SHA-256(salt + password) — không thay thế cho auth server thực,
+// nhưng tránh lưu plaintext trong localStorage.
+async function hashPassword(password: string, salt: string): Promise<string> {
+  if (typeof crypto === "undefined" || !crypto.subtle) {
+    // fallback rất yếu — chỉ dùng khi không có SubtleCrypto
+    return `plain:${password}`;
+  }
+  const data = new TextEncoder().encode(`${salt}:${password}`);
+  const buf = await crypto.subtle.digest("SHA-256", data);
+  return Array.from(new Uint8Array(buf))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+function makeSalt(): string {
+  const arr = new Uint8Array(16);
+  if (typeof crypto !== "undefined" && crypto.getRandomValues) {
+    crypto.getRandomValues(arr);
+  } else {
+    for (let i = 0; i < arr.length; i++) arr[i] = Math.floor(Math.random() * 256);
+  }
+  return Array.from(arr).map((b) => b.toString(16).padStart(2, "0")).join("");
+}
 
 type AuthCtx = {
   user: TingoUser | null;
@@ -80,9 +109,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const p = phone.replace(/\s+/g, "").trim();
     if (!p || !password) return { ok: false, error: "Vui lòng nhập đầy đủ thông tin." };
     const users = loadUsers();
-    const found = users.find((u) => u.phone === p);
-    if (!found) return { ok: false, error: "Số điện thoại chưa được đăng ký." };
-    if (found.password !== password) return { ok: false, error: "Mật khẩu không đúng." };
+    const idx = users.findIndex((u) => u.phone === p);
+    if (idx === -1) return { ok: false, error: "Số điện thoại chưa được đăng ký." };
+    const found = users[idx];
+
+    // Migrate: nếu user cũ còn lưu plaintext, hash lại ngay khi đăng nhập đúng.
+    if (found.password && !found.passwordHash) {
+      if (found.password !== password) return { ok: false, error: "Mật khẩu không đúng." };
+      const salt = makeSalt();
+      users[idx] = {
+        phone: found.phone,
+        name: found.name,
+        createdAt: found.createdAt,
+        salt,
+        passwordHash: await hashPassword(password, salt),
+      };
+      saveUsers(users);
+    } else {
+      if (!found.salt || !found.passwordHash) return { ok: false, error: "Tài khoản lỗi, vui lòng đăng ký lại." };
+      const hash = await hashPassword(password, found.salt);
+      if (hash !== found.passwordHash) return { ok: false, error: "Mật khẩu không đúng." };
+    }
+
     const next: TingoUser = { phone: found.phone, name: found.name, createdAt: found.createdAt };
     localStorage.setItem(USER_KEY, JSON.stringify(next));
     setUser(next);
@@ -98,7 +146,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const users = loadUsers();
     if (users.some((u) => u.phone === p)) return { ok: false, error: "Số điện thoại đã được đăng ký." };
     const createdAt = new Date().toISOString();
-    const stored: StoredUser = { phone: p, name: name.trim(), password, createdAt };
+    const salt = makeSalt();
+    const passwordHash = await hashPassword(password, salt);
+    const stored: StoredUser = { phone: p, name: name.trim(), createdAt, salt, passwordHash };
     users.push(stored);
     saveUsers(users);
     const next: TingoUser = { phone: stored.phone, name: stored.name, createdAt };

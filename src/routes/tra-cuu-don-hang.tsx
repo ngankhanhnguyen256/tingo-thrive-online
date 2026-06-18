@@ -119,20 +119,21 @@ type PendingOrder = {
   status: OrderStatus;
 };
 
-function lookupPendingOrder(query: string): Order | null {
+function lookupPendingOrder(orderId: string, phone: string): Order | null {
   if (typeof window === "undefined") return null;
   try {
     const raw = localStorage.getItem("tingo_pending_orders_v1");
     if (!raw) return null;
     const list: PendingOrder[] = JSON.parse(raw);
-    const q = query.trim().toLowerCase();
+    const oid = orderId.trim().toLowerCase();
+    const ph = phone.trim();
     const found = list.find(
-      (o) => o.orderId.toLowerCase() === q || o.phone === query.trim(),
+      (o) => o.orderId.toLowerCase() === oid && o.phone === ph,
     );
     if (!found) return null;
     return {
-      customer: found.customer,
-      phone: found.phone,
+      customer: maskName(found.customer),
+      phone: maskPhone(found.phone),
       orderDate: found.orderDate,
       carrier: "Đang cập nhật",
       trackingCode: found.orderId,
@@ -143,15 +144,33 @@ function lookupPendingOrder(query: string): Order | null {
   }
 }
 
-async function fetchOrder(query: string): Promise<Order | null> {
-  // 1) Ưu tiên API/Webhook nếu đã cấu hình
+function maskPhone(p: string): string {
+  if (!p || p.length < 4) return "***";
+  return p.slice(0, 3) + "****" + p.slice(-3);
+}
+function maskName(n: string): string {
+  if (!n) return "***";
+  const parts = n.trim().split(/\s+/);
+  return parts.map((w, i) => (i === parts.length - 1 ? w : (w[0] || "") + "***")).join(" ");
+}
+
+async function fetchOrder(orderId: string, phone: string): Promise<Order | null> {
+  // 1) Ưu tiên API/Webhook nếu đã cấu hình — yêu cầu cả mã đơn và SĐT để tránh dò danh sách.
   if (API_URL) {
     try {
-      const res = await fetch(`${API_URL}?q=${encodeURIComponent(query)}`, { method: "GET" });
+      const res = await fetch(
+        `${API_URL}?orderId=${encodeURIComponent(orderId)}&phone=${encodeURIComponent(phone)}`,
+        { method: "GET" },
+      );
       if (res.ok) {
         const data = await res.json();
-        if (data && data.customer) {
-          return { ...data, status: parseStatus(data.status) } as Order;
+        if (data && data.customer && data.phone && data.phone === phone.trim()) {
+          return {
+            ...data,
+            customer: maskName(data.customer),
+            phone: maskPhone(data.phone),
+            status: parseStatus(data.status),
+          } as Order;
         }
       }
     } catch {
@@ -159,13 +178,17 @@ async function fetchOrder(query: string): Promise<Order | null> {
     }
   }
 
-  // 2) Nếu webhook chưa có dữ liệu, đọc đơn vừa đặt từ localStorage (mốc 1 sáng xanh)
-  const pending = lookupPendingOrder(query);
+  // 2) Đọc đơn vừa đặt từ localStorage (yêu cầu khớp cả mã đơn lẫn SĐT)
+  const pending = lookupPendingOrder(orderId, phone);
   if (pending) return pending;
 
-  // 3) Fallback demo
+  // 3) Fallback demo — yêu cầu khớp cả 2
   await new Promise((r) => setTimeout(r, 400));
-  return MOCK_DB[query.trim()] ?? null;
+  const mock = MOCK_DB[orderId.trim()];
+  if (mock && mock.phone === phone.trim()) {
+    return { ...mock, customer: maskName(mock.customer), phone: maskPhone(mock.phone) };
+  }
+  return null;
 }
 
 function statusIndex(s: OrderStatus): number {
@@ -173,20 +196,24 @@ function statusIndex(s: OrderStatus): number {
 }
 
 function TrackingPage() {
-  const [query, setQuery] = useState("");
+  const [orderId, setOrderId] = useState("");
+  const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
   const [order, setOrder] = useState<Order | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const onSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!query.trim()) return;
+    if (!orderId.trim() || !phone.trim()) {
+      setError("Vui lòng nhập cả Mã đơn hàng và Số điện thoại để tra cứu.");
+      return;
+    }
     setLoading(true);
     setError(null);
     setOrder(null);
-    const result = await fetchOrder(query);
+    const result = await fetchOrder(orderId, phone);
     if (!result) {
-      setError("Không tìm thấy thông tin đơn hàng. Vui lòng kiểm tra lại số điện thoại hoặc mã đơn!");
+      setError("Không tìm thấy đơn hàng khớp với mã đơn và số điện thoại đã nhập.");
     } else {
       setOrder(result);
     }
@@ -205,15 +232,22 @@ function TrackingPage() {
               <span className="text-gradient-brand">TRA CỨU HÀNH TRÌNH ĐƠN HÀNG TINGO</span>
             </h1>
             <p className="mt-3 text-center text-sm text-muted-foreground">
-              Nhập số điện thoại hoặc mã đơn để xem trạng thái vận chuyển theo thời gian thực.
+              Nhập Mã đơn hàng và Số điện thoại đã đặt để xem trạng thái vận chuyển.
             </p>
 
-            <form onSubmit={onSearch} className="mx-auto mt-8 flex max-w-2xl flex-col gap-3 sm:flex-row">
+            <form onSubmit={onSearch} className="mx-auto mt-8 flex max-w-2xl flex-col gap-3">
               <input
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Nhập Số điện thoại hoặc Mã đơn hàng của bạn..."
-                className="flex-1 rounded-2xl border border-border bg-white px-5 py-3.5 text-sm shadow-sm outline-none transition focus:border-leaf focus:ring-2 focus:ring-leaf/20"
+                value={orderId}
+                onChange={(e) => setOrderId(e.target.value)}
+                placeholder="Mã đơn hàng (VD: TG-xxxx)"
+                className="rounded-2xl border border-border bg-white px-5 py-3.5 text-sm shadow-sm outline-none transition focus:border-leaf focus:ring-2 focus:ring-leaf/20"
+              />
+              <input
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="Số điện thoại đã dùng khi đặt hàng"
+                inputMode="tel"
+                className="rounded-2xl border border-border bg-white px-5 py-3.5 text-sm shadow-sm outline-none transition focus:border-leaf focus:ring-2 focus:ring-leaf/20"
               />
               <button
                 type="submit"
@@ -317,8 +351,8 @@ function TrackingPage() {
 
           {!order && !error && (
             <div className="mx-auto mt-6 max-w-2xl text-center text-xs text-muted-foreground">
-              Gợi ý dùng thử: <span className="font-semibold text-foreground">0987654321</span> hoặc{" "}
-              <span className="font-semibold text-foreground">TG-2026</span>
+              Để tra cứu, vui lòng nhập đúng <span className="font-semibold text-foreground">Mã đơn hàng</span> và{" "}
+              <span className="font-semibold text-foreground">Số điện thoại</span> đã sử dụng khi đặt hàng.
             </div>
           )}
         </section>
