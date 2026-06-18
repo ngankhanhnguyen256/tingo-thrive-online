@@ -196,20 +196,24 @@ function statusIndex(s: OrderStatus): number {
 }
 
 function TrackingPage() {
-  const [query, setQuery] = useState("");
+  const [orderId, setOrderId] = useState("");
+  const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
   const [order, setOrder] = useState<Order | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const onSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!query.trim()) return;
+    if (!orderId.trim() || !phone.trim()) {
+      setError("Vui lòng nhập cả Mã đơn hàng và Số điện thoại để tra cứu.");
+      return;
+    }
     setLoading(true);
     setError(null);
     setOrder(null);
-    const result = await fetchOrder(query);
+    const result = await fetchOrder(orderId, phone);
     if (!result) {
-      setError("Không tìm thấy thông tin đơn hàng. Vui lòng kiểm tra lại số điện thoại hoặc mã đơn!");
+      setError("Không tìm thấy đơn hàng khớp với mã đơn và số điện thoại đã nhập.");
     } else {
       setOrder(result);
     }
@@ -228,15 +232,22 @@ function TrackingPage() {
               <span className="text-gradient-brand">TRA CỨU HÀNH TRÌNH ĐƠN HÀNG TINGO</span>
             </h1>
             <p className="mt-3 text-center text-sm text-muted-foreground">
-              Nhập số điện thoại hoặc mã đơn để xem trạng thái vận chuyển theo thời gian thực.
+              Nhập Mã đơn hàng và Số điện thoại đã đặt để xem trạng thái vận chuyển.
             </p>
 
-            <form onSubmit={onSearch} className="mx-auto mt-8 flex max-w-2xl flex-col gap-3 sm:flex-row">
+            <form onSubmit={onSearch} className="mx-auto mt-8 flex max-w-2xl flex-col gap-3">
               <input
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Nhập Số điện thoại hoặc Mã đơn hàng của bạn..."
-                className="flex-1 rounded-2xl border border-border bg-white px-5 py-3.5 text-sm shadow-sm outline-none transition focus:border-leaf focus:ring-2 focus:ring-leaf/20"
+                value={orderId}
+                onChange={(e) => setOrderId(e.target.value)}
+                placeholder="Mã đơn hàng (VD: TG-xxxx)"
+                className="rounded-2xl border border-border bg-white px-5 py-3.5 text-sm shadow-sm outline-none transition focus:border-leaf focus:ring-2 focus:ring-leaf/20"
+              />
+              <input
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="Số điện thoại đã dùng khi đặt hàng"
+                inputMode="tel"
+                className="rounded-2xl border border-border bg-white px-5 py-3.5 text-sm shadow-sm outline-none transition focus:border-leaf focus:ring-2 focus:ring-leaf/20"
               />
               <button
                 type="submit"
