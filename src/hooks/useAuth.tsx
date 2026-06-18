@@ -109,9 +109,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const p = phone.replace(/\s+/g, "").trim();
     if (!p || !password) return { ok: false, error: "Vui lòng nhập đầy đủ thông tin." };
     const users = loadUsers();
-    const found = users.find((u) => u.phone === p);
-    if (!found) return { ok: false, error: "Số điện thoại chưa được đăng ký." };
-    if (found.password !== password) return { ok: false, error: "Mật khẩu không đúng." };
+    const idx = users.findIndex((u) => u.phone === p);
+    if (idx === -1) return { ok: false, error: "Số điện thoại chưa được đăng ký." };
+    const found = users[idx];
+
+    // Migrate: nếu user cũ còn lưu plaintext, hash lại ngay khi đăng nhập đúng.
+    if (found.password && !found.passwordHash) {
+      if (found.password !== password) return { ok: false, error: "Mật khẩu không đúng." };
+      const salt = makeSalt();
+      users[idx] = {
+        phone: found.phone,
+        name: found.name,
+        createdAt: found.createdAt,
+        salt,
+        passwordHash: await hashPassword(password, salt),
+      };
+      saveUsers(users);
+    } else {
+      if (!found.salt || !found.passwordHash) return { ok: false, error: "Tài khoản lỗi, vui lòng đăng ký lại." };
+      const hash = await hashPassword(password, found.salt);
+      if (hash !== found.passwordHash) return { ok: false, error: "Mật khẩu không đúng." };
+    }
+
     const next: TingoUser = { phone: found.phone, name: found.name, createdAt: found.createdAt };
     localStorage.setItem(USER_KEY, JSON.stringify(next));
     setUser(next);
@@ -127,7 +146,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const users = loadUsers();
     if (users.some((u) => u.phone === p)) return { ok: false, error: "Số điện thoại đã được đăng ký." };
     const createdAt = new Date().toISOString();
-    const stored: StoredUser = { phone: p, name: name.trim(), password, createdAt };
+    const salt = makeSalt();
+    const passwordHash = await hashPassword(password, salt);
+    const stored: StoredUser = { phone: p, name: name.trim(), createdAt, salt, passwordHash };
     users.push(stored);
     saveUsers(users);
     const next: TingoUser = { phone: stored.phone, name: stored.name, createdAt };
