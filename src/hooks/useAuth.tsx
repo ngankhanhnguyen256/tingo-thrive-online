@@ -14,7 +14,36 @@ export type TingoUser = {
   createdAt: string;
 };
 
-type StoredUser = TingoUser & { password: string };
+type StoredUser = TingoUser & {
+  // Lưu hash thay vì mật khẩu thô. Giữ trường `password` cũ để migrate dữ liệu cũ.
+  passwordHash?: string;
+  salt?: string;
+  password?: string;
+};
+
+// Hash mật khẩu phía client bằng SHA-256(salt + password) — không thay thế cho auth server thực,
+// nhưng tránh lưu plaintext trong localStorage.
+async function hashPassword(password: string, salt: string): Promise<string> {
+  if (typeof crypto === "undefined" || !crypto.subtle) {
+    // fallback rất yếu — chỉ dùng khi không có SubtleCrypto
+    return `plain:${password}`;
+  }
+  const data = new TextEncoder().encode(`${salt}:${password}`);
+  const buf = await crypto.subtle.digest("SHA-256", data);
+  return Array.from(new Uint8Array(buf))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+function makeSalt(): string {
+  const arr = new Uint8Array(16);
+  if (typeof crypto !== "undefined" && crypto.getRandomValues) {
+    crypto.getRandomValues(arr);
+  } else {
+    for (let i = 0; i < arr.length; i++) arr[i] = Math.floor(Math.random() * 256);
+  }
+  return Array.from(arr).map((b) => b.toString(16).padStart(2, "0")).join("");
+}
 
 type AuthCtx = {
   user: TingoUser | null;
